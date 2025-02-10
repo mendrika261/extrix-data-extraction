@@ -9,6 +9,7 @@ from langchain.chat_models import init_chat_model
 from regex import E, P
 
 from core.utils import load_json_file
+from core.monitoring import MonitoringCallbackHandler
 from data_extractor.interface import DataExtractor
 
 class Example(BaseModel):
@@ -24,12 +25,16 @@ class LLMDataExtractor(DataExtractor):
                  provider: str = "google-genai",
                  temperature: float = 0.1):
         super().__init__()
-
+        
+        self.monitoring_handler = MonitoringCallbackHandler(model_name, provider)
+        
         self._llm = init_chat_model(
             model=model_name,
             model_provider=provider,
             temperature=temperature,
+            callbacks=[self.monitoring_handler]
         )
+        
         self._prompt_template = ChatPromptTemplate.from_messages([
             (
                 "system",
@@ -40,13 +45,15 @@ class LLMDataExtractor(DataExtractor):
             ("human", "{text}"),
         ])
         
-
     def _get_structured_llm(self, output_schema: Type[BaseModel]) -> BaseCallbackHandler:
         return self._llm.with_structured_output(schema=output_schema)
 
     def extract(self,
                 text: str,
                 output_schema: Type[BaseModel]) -> BaseModel:
+        # Set input tokens based on text length (rough estimation)
+        self.monitoring_handler.input_tokens = len(text.split())
+        
         prompt = self._prompt_template.invoke({
             "text": text,
             "examples": self._examples

@@ -4,10 +4,11 @@ from typing import List, Any
 from core.cache_manager import CacheManager
 
 class FileProcessor(ABC):
-    def __init__(self, file_path: str, languages: List[str]):
+    def __init__(self, file_path: str, languages: List[str] = None, use_cache: bool = True):
         self._file_path = file_path
-        self._languages = languages
+        self._languages = languages or ["fr"]
         self._cache_manager = CacheManager()
+        self._use_cache = use_cache
 
     @abstractmethod
     def load_file(self) -> Any:
