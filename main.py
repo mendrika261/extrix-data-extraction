@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 from data_extractor.llm_extractor import LLMDataExtractor
 from file_processor.unstructured_processor import UnstructuredFileProcessor
 from core.model_factory import ModelFactory
-import json
 
 load_dotenv()
 LANGUAGES: List[str] = os.getenv("LANGUAGES", "fr").split(",")

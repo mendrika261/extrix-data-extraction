@@ -1,6 +1,5 @@
 from typing import List, Any
 from functools import lru_cache
-from dotenv import load_dotenv
 from langchain_unstructured import UnstructuredLoader
 from unstructured.cleaners.core import (
     group_broken_paragraphs,
@@ -15,6 +14,18 @@ class UnstructuredFileProcessor(FileProcessor):
         super().__init__(file_path, languages)
         self._strategy = strategy
         self._use_cache = use_cache
+        self._loader = None
+
+    @property
+    def loader(self):
+        if self._loader is None:
+            self._loader = UnstructuredLoader(
+                file_path=self._file_path,
+                strategy=self._strategy,
+                languages=self._languages,
+                post_processors=[group_broken_paragraphs, auto_paragraph_grouper],
+            )
+        return self._loader
 
     def load_file(self) -> Any:
         if self._use_cache:
@@ -22,13 +33,7 @@ class UnstructuredFileProcessor(FileProcessor):
             if cached:
                 return cached
 
-        loader = UnstructuredLoader(
-            file_path=self._file_path,
-            strategy=self._strategy,
-            languages=self._languages,
-            post_processors=[group_broken_paragraphs, auto_paragraph_grouper],
-        )
-        document = loader.load()
+        document = self.loader.load()
         
         if self._use_cache:
             self._cache_manager.set(self._file_path, document)

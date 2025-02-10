@@ -8,10 +8,15 @@ from rich.panel import Panel
 from rich.syntax import Syntax
 from pathlib import Path
 
+import cli
+from file_processor.easyocr_processor import EasyOCRProcessor
+from file_processor.tesserocr_processor import TesserOCRProcessor
 from file_processor.unstructured_processor import UnstructuredFileProcessor
 from data_extractor.llm_extractor import LLMDataExtractor
 from core.model_factory import ModelFactory
 from core.utils import find_files
+from core.exceptions import OSNotSupportedError, OSCompatibilityWarning
+import warnings
 
 VERSION = "0.1-beta"
 console = Console()
@@ -27,9 +32,10 @@ class Processor:
         self.output_model = self._init_model()
         self.processor_args = {
             "languages": args.languages,
-            "strategy": args.strategy,
             "use_cache": not args.no_cache
         }
+        if args.processor == "unstructured":
+            self.processor_args["strategy"] = args.strategy
         
     def _init_extractor(self) -> LLMDataExtractor:
         extractor = LLMDataExtractor(
@@ -54,7 +60,12 @@ class Processor:
             
             # Stage 1: Text extraction
             progress.update(file_task, description=f"[blue]Extracting text from {file_path.name}[/blue]")
-            processor = UnstructuredFileProcessor(
+            processor_class = {
+                "unstructured": UnstructuredFileProcessor,
+                "easyocr": EasyOCRProcessor,
+                "tesserocr": TesserOCRProcessor
+            }[self.args.processor]
+            processor = processor_class(
                 file_path=str(file_path),
                 **self.processor_args
             )
@@ -173,6 +184,12 @@ def parse_args(args: List[str]) -> argparse.Namespace:
         action="store_true",
         help="Disable caching for text extraction"
     )
+    input_group.add_argument(
+        "--processor",
+        choices=["unstructured", "easyocr", "tesserocr"],
+        default="unstructured",
+        help="Text extraction processor to use (default: %(default)s)"
+    )
 
     # LLM arguments
     llm_group = parser.add_argument_group('LLM Configuration')
@@ -220,55 +237,74 @@ def main(args: List[str] = None) -> int:
     if args is None:
         args = sys.argv[1:]
     
-    parsed_args = parse_args(args)
-
     try:
+        parsed_args = parse_args(args)
         print_banner()
-        
-        with Progress(
-            SpinnerColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            BarColumn(),
-            TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
-            TimeElapsedColumn(),
-            console=console
-        ) as progress:
-            # Initialize extractor and model
-            init_task = progress.add_task("[cyan]Initializing...", total=1)
-            processor = Processor(parsed_args)
-            progress.update(init_task, advance=1, completed=True)
 
-            # Find files to process
-            files = find_files(parsed_args.input_pattern)
-            if not files:
-                console.print(f"[bold red]No files found matching pattern:[/bold red] {parsed_args.input_pattern}")
-                return 1
-
-            # Process files with progress tracking
-            overall_task = progress.add_task(
-                "[yellow]Overall progress",
-                total=len(files)
-            )
+        # Capture compatibility warnings
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
             
-            successful = 0
-            errors: List[ProcessingError] = []
-            
-            for file_path in files:
-                result, error = processor.process_file(file_path, progress)
+            try:
+                with Progress(
+                    SpinnerColumn(),
+                    TextColumn("[progress.description]{task.description}"),
+                    BarColumn(),
+                    TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+                    TimeElapsedColumn(),
+                    console=console
+                ) as progress:
+                    # Initialize extractor and model
+                    init_task = progress.add_task("[cyan]Initializing...", total=1)
+                    processor = Processor(parsed_args)
+                    progress.update(init_task, advance=1, completed=True)
 
-                console.print(f"\n[bold blue]Results for:[/bold blue] {file_path}")
-                if error:
-                    console.print(f"[red]Failed:[/red] {error.reason}")
-                    errors.append(error)
-                else:
-                    processor.display_result(result)
-                    successful += 1
+                    # Find files to process
+                    files = find_files(parsed_args.input_pattern)
+                    if not files:
+                        console.print(f"[bold red]No files found matching pattern:[/bold red] {parsed_args.input_pattern}")
+                        return 1
+
+                    # Process files with progress tracking
+                    overall_task = progress.add_task(
+                        "[yellow]Overall progress",
+                        total=len(files)
+                    )
+                    
+                    successful = 0
+                    errors: List[ProcessingError] = []
+                    
+                    for file_path in files:
+                        result, error = processor.process_file(file_path, progress)
+
+                        console.print(f"\n[bold blue]Results for:[/bold blue] {file_path}")
+                        if error:
+                            console.print(f"[red]Failed:[/red] {error.reason}")
+                            errors.append(error)
+                        else:
+                            processor.display_result(result)
+                            successful += 1
+                        
+                        progress.update(overall_task, advance=1)
+
+                    progress.update(overall_task, description="[green]Processing complete!")
+                    display_summary(successful, errors)
+
+                # Display any compatibility warnings after processing
+                for warning in w:
+                    if issubclass(warning.category, OSCompatibilityWarning):
+                        console.print(f"\n[yellow]Warning:[/yellow] {warning.message}")
                 
-                progress.update(overall_task, advance=1)
+                return 0 if successful > 0 else 1
 
-            progress.update(overall_task, description="[green]Processing complete!")
-            display_summary(successful, errors)
-            return 0 if successful > 0 else 1
+            except OSNotSupportedError as e:
+                console.print(Panel(
+                    f"[bold red]OS Compatibility Error:[/bold red] {str(e)}\n"
+                    "[yellow]This feature is not available on your operating system[/yellow]",
+                    title="[bold red]OS Error[/bold red]",
+                    border_style="red"
+                ))
+                return 1
 
     except Exception as e:
         console.print(Panel(
@@ -279,4 +315,4 @@ def main(args: List[str] = None) -> int:
         return 1
 
 if __name__ == "__main__":
-    sys.exit(main())
+    cli.main()

@@ -1,10 +1,15 @@
 import json
 import csv
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Type
 from io import StringIO
 import fnmatch
 import os
+from PIL import Image
+from pdf2image import convert_from_path
+import tempfile
+import importlib
+import pkgutil
 
 JSON_IDENTATION = 2
 FILE_ENCODING = 'utf-8'
@@ -59,7 +64,6 @@ def write_csv(path: Path, data: Dict[str, str]) -> None:
     append_csv_row(path, list(data.values()))
 
 def find_files(pattern: str) -> List[Path]:
-    """Find files matching the given pattern."""
     if not ('*' in pattern or '?' in pattern):
         return [Path(pattern)] if os.path.exists(pattern) else []
     
@@ -98,3 +102,68 @@ def write_monitoring_data(path: Path, new_data: Dict[str, Any]) -> None:
             write_json(path, new_data)
     else:
         write_json(path, new_data)
+
+def convert_pdf_to_images(pdf_path: str) -> List[str]:
+    temp_dir = tempfile.mkdtemp()
+    image_paths = []
+    
+    pages = convert_from_path(pdf_path)
+    for i, page in enumerate(pages):
+        image_path = os.path.join(temp_dir, f'page_{i}.png')
+        page.save(image_path, 'PNG')
+        image_paths.append(image_path)
+    
+    return image_paths
+
+def handle_document_images_or_texts(file_path: str, image_handler_func) -> List[Any]:
+    file_path = Path(file_path)
+    results = []
+    
+    if file_path.suffix.lower() == '.pdf':
+        temp_dir = tempfile.mkdtemp()
+        try:
+            image_paths = convert_pdf_to_images(str(file_path))
+            for image_path in image_paths:
+                result = image_handler_func(image_path)
+                results.append(result)
+        finally:
+            import shutil
+            shutil.rmtree(temp_dir)
+    else:
+        results.append(image_handler_func(str(file_path)))
+    
+    return results
+
+def is_macos() -> bool:
+    return os.uname().sysname == 'Darwin'
+
+def _is_valid_class_to_load(attr: Any, base_class: Type, exclude_base: bool) -> bool:
+    if not isinstance(attr, type):
+        return False
+    if not issubclass(attr, base_class):
+        return False
+    if exclude_base and attr == base_class:
+        return False
+    return True
+
+def load_classes_from_package(
+    package_name: str,
+    base_class: Type,
+    module_suffix: str = '',
+    exclude_base: bool = True
+) -> Dict[str, Type]:
+    classes = {}
+    package = importlib.import_module(package_name)
+    
+    for _, name, _ in pkgutil.iter_modules(package.__path__):
+        if module_suffix and not name.endswith(module_suffix):
+            continue
+            
+        module = importlib.import_module(f'{package_name}.{name}')
+        for attr_name in dir(module):
+            attr = getattr(module, attr_name)
+            if _is_valid_class_to_load(attr, base_class, exclude_base):
+                key = name.replace(module_suffix, '') if module_suffix else name
+                classes[key] = attr
+    
+    return classes

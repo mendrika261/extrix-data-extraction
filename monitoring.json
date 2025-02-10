@@ -1,12 +1,12 @@
 [
   {
-    "timestamp": "2025-02-10T18:42:53.907439",
+    "timestamp": "2025-02-10T23:23:22.340297",
     "model": "gemini-1.5-flash",
     "provider": "google-genai",
-    "duration_seconds": 69.403768,
-    "input_tokens": 29183,
+    "duration_seconds": 393.38787699999995,
+    "input_tokens": 175982,
     "output_tokens": 0,
-    "total_tokens": 29183,
-    "estimated_cost_usd": 0.001
+    "total_tokens": 175982,
+    "estimated_cost_usd": 0.008199999999999995
   }
 ]

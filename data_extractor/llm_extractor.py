@@ -1,12 +1,9 @@
 from functools import lru_cache
-from typing import Any, Dict, List, Type
-from datetime import datetime
-from matplotlib.pyplot import cla
+from typing import Any, List, Type
 from pydantic import BaseModel, Field
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.callbacks.base import BaseCallbackHandler
 from langchain.chat_models import init_chat_model
-from regex import E, P
 
 from core.utils import load_json_file
 from core.monitoring import MonitoringCallbackHandler
@@ -48,24 +45,20 @@ class LLMDataExtractor(DataExtractor):
     def _get_structured_llm(self, output_schema: Type[BaseModel]) -> BaseCallbackHandler:
         return self._llm.with_structured_output(schema=output_schema)
 
+    def start_monitoring(self, text: str) -> None:
+        self.monitoring_handler.input_tokens = len(text.split())
+        
+
     def extract(self,
                 text: str,
                 output_schema: Type[BaseModel]) -> BaseModel:
-        # Set input tokens based on text length (rough estimation)
-        self.monitoring_handler.input_tokens = len(text.split())
+        self.start_monitoring(text)
         
         prompt = self._prompt_template.invoke({
             "text": text,
             "examples": self._examples
         })
         result = self._get_structured_llm(output_schema).invoke(prompt)
-        
-        # Ensure datetime fields are properly formatted
-        for field_name, field in output_schema.model_fields.items():
-            if field.annotation == datetime:
-                value = getattr(result, field_name)
-                if isinstance(value, str):
-                    setattr(result, field_name, datetime.fromisoformat(value.split('T')[0]))
         
         return result
 
