@@ -1,0 +1,50 @@
+{
+    "examples": [
+        {
+            "role": "assistant",
+            "content": {
+                "bailleur": "Nvidia",
+                "preneur": "Jean Dupont",
+                "adresse": "12 rue de la paix, 75000 Paris",
+                "description": "Appartement de 3 pièces, 2 chambres, 1 salle de bain, 1 cuisine, 1 salon",
+                "surface": 50.0,
+                "date_prise_effet": "2022-01-31",
+                "date_fin": "2023-01-31",
+                "duree_bail": {
+                    "years": 1
+                }
+            }
+        },
+        {
+            "role": "assistant",
+            "content": {
+                "bailleur": "Google",
+                "preneur": "AMD",
+                "adresse": "72 rue de la liberté, 69000 Lyon",
+                "description": "Bureau de 2 pièces, 1 salle de réunion, 1 salle de repos | demande d'accord si usage autre que bureautique",
+                "surface": 100.0,
+                "date_prise_effet": "2000-02-25",
+                "date_fin": "2001-03-25",
+                "duree_bail": {
+                    "years": 1,
+                    "months": 1
+                }
+            }
+        },
+        {
+            "role": "assistant",
+            "content": {
+                "bailleur": "Yves Rocher",
+                "preneur": "Paul Durand",
+                "adresse": "12 rue de la paix, 75000 Paris",
+                "description": "1 grand open space, 25 places de parking | usage bureautique uniquement",
+                "surface": 250.0,
+                "date_prise_effet": "2024-09-27",
+                "date_fin": "2024-12-27",
+                "duree_bail": {
+                    "months": 3
+                }
+            }
+        }
+    ]
+}
