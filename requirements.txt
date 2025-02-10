@@ -1,6 +1,11 @@
 langchain
+langchain-google-genai
+unstructured
+pydantic
+python-dotenv
 transformers
 torch
 accelerate
 bitsandbytes
 sentencepiece
+rich>=10.0.0

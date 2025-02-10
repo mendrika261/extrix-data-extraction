@@ -1,0 +1,68 @@
+
+class Leasing(BaseModel):
+    bailleur: str = Field(
+        ..., 
+        title="Bailleur",
+        description="Nom de la société UNIQUEMENT ou prénom nom de la personne UNIQUEMENT"
+    )
+    preneur: str = Field(
+        ..., 
+        title="Preneur",
+        description="Nom de la société UNIQUEMENT ou prénom nom de la personne UNIQUEMENT"
+    )
+    adresse: str = Field(
+        ..., 
+        title="Adresse du bien loué",
+        description="Numéro, rue, code postal, ville"
+    )
+    description: str = Field(
+        ..., 
+        title="Description du bien",
+        description="Description sous forme de liste, avec usages et équipements inclus, pas de phrases"
+    )
+    surface: float = Field(
+        ..., 
+        title="Surface",
+        description="Surface du bien loué en m²"
+    )
+    date_prise_effet: datetime = Field(
+        ..., 
+        title="Date de prise d'effet",
+        description="Date de prise d'effet du bail"
+    )
+    date_fin: datetime = Field(
+        ..., 
+        title="Date de fin",
+        description="Date de fin du bail"
+    )
+    duree_bail: Delay = Field(
+        ..., 
+        title="Durée du bail",
+        description="Durée du bail en années et mois"
+    )
+
+    @field_validator('date_fin')
+    def validate_date_fin(cls, v: Date, info: ValidationInfo) -> datetime:
+        date_prise_effet = info.data.get('date_prise_effet')
+        if date_prise_effet and v.is_before(date_prise_effet):
+            raise ValueError('La date de fin doit être après la date de prise d\'effet')
+        return v
+    
+    @field_validator('duree_bail')
+    def validate_duree_bail(cls, v: Delay, info: ValidationInfo) -> Delay:
+        date_prise_effet = info.data.get('date_prise_effet')
+        date_fin = info.data.get('date_fin')
+        if date_prise_effet and date_fin:
+            diff = date_prise_effet.diff(date_fin)
+            if v.years != diff.years or v.months != diff.months:
+                raise ValueError(f'La durée du bail doit être de {diff} au lieu de {v}')
+        return v
+
+    def model_dump_csv(self) -> Dict[str, str]:
+        return {key: str(value) for key, value in self.model_dump().items()}
+
+    model_config = {
+        "json_schema_extra": {
+            "description": "Informations extraites d'un contrat de location"
+        }
+    }

@@ -1,5 +1,6 @@
 from functools import lru_cache
 from typing import Any, Dict, List, Type
+from datetime import datetime
 from matplotlib.pyplot import cla
 from pydantic import BaseModel, Field
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -12,7 +13,7 @@ from data_extractor.interface import DataExtractor
 
 class Example(BaseModel):
     role: str = Field(...)
-    content: str = Field(...)
+    content: str|Any = Field(...)
 
 class ExamplesJson(BaseModel):
     examples: List[Example] = Field(...)
@@ -21,9 +22,8 @@ class LLMDataExtractor(DataExtractor):
     def __init__(self,
                  model_name: str = "gemini-1.5-pro",
                  provider: str = "google-genai",
-                 temperature: float = 0.5):
+                 temperature: float = 0.1):
         super().__init__()
-        self._examples = []
 
         self._llm = init_chat_model(
             model=model_name,
@@ -51,9 +51,18 @@ class LLMDataExtractor(DataExtractor):
             "text": text,
             "examples": self._examples
         })
-        return self._get_structured_llm(output_schema).invoke(prompt)
+        result = self._get_structured_llm(output_schema).invoke(prompt)
+        
+        # Ensure datetime fields are properly formatted
+        for field_name, field in output_schema.model_fields.items():
+            if field.annotation == datetime:
+                value = getattr(result, field_name)
+                if isinstance(value, str):
+                    setattr(result, field_name, datetime.fromisoformat(value.split('T')[0]))
+        
+        return result
 
-    def load_examples_json(self, examples: List[Dict[str, Any]]) -> None:
+    def load_examples_json(self, examples: List[Example]) -> None:
         self._examples = [
             {
                 "role": example["role"],
@@ -67,4 +76,3 @@ class LLMDataExtractor(DataExtractor):
         json = load_json_file(json_file_path)
         ExamplesJson.model_validate(json)
         self.load_examples_json(json['examples'])
-        

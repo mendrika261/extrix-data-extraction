@@ -1,0 +1,73 @@
+{
+    "name": "Leasing",
+    "description": "Informations extraites d'un contrat de location",
+    "fields": {
+        "bailleur": {
+            "field_type": "str",
+            "title": "Bailleur",
+            "description": "Nom de la société UNIQUEMENT ou prénom nom de la personne UNIQUEMENT",
+            "required": true
+        },
+        "preneur": {
+            "field_type": "str",
+            "title": "Preneur",
+            "description": "Nom de la société UNIQUEMENT ou prénom nom de la personne UNIQUEMENT",
+            "required": true
+        },
+        "adresse": {
+            "field_type": "str",
+            "title": "Adresse du bien loué",
+            "description": "Numéro, rue, code postal, ville",
+            "required": true
+        },
+        "description": {
+            "field_type": "str",
+            "title": "Description du bien et type d'usage",
+            "description": "Description sous forme de liste, et types d'usage à la fin uniquement, pas de phrases",
+            "required": true
+        },
+        "surface": {
+            "field_type": "float",
+            "title": "Surface",
+            "description": "Surface du bien loué en m²",
+            "required": true
+        },
+        "date_prise_effet": {
+            "field_type": "date",
+            "title": "Date de prise d'effet",
+            "description": "Date de prise d'effet du bail",
+            "required": true
+        },
+        "date_fin": {
+            "field_type": "date",
+            "title": "Date de fin",
+            "description": "Date de fin du bail",
+            "required": true,
+            "validators": [
+                {
+                    "type": "registered",
+                    "name": "date_after",
+                    "params": {
+                        "field": "date_prise_effet"
+                    }
+                }
+            ]
+        },
+        "duree_bail": {
+            "field_type": "delay",
+            "title": "Durée du bail",
+            "description": "Durée du bail en années et mois",
+            "required": true,
+            "validators": [
+                {
+                    "type": "registered",
+                    "name": "delay_matches_dates",
+                    "params": {
+                        "start_date": "date_prise_effet",
+                        "end_date": "date_fin"
+                    }
+                }
+            ]
+        }
+    }
+}

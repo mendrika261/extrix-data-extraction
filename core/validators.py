@@ -1,9 +1,8 @@
 from typing import Any, Callable, Dict
-from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from pydantic import ValidationInfo
 
-from core.models import Delay
+from core.models import Date, Delay
 
 class ValidatorRegistry:
     _validators: Dict[str, Callable] = {}
@@ -22,16 +21,16 @@ class ValidatorRegistry:
         return cls._validators[name]
 
 @ValidatorRegistry.register("date_after")
-def validate_date_after(v: datetime, info: ValidationInfo, *, field: str) -> datetime:
+def validate_date_after(v: Date, info: ValidationInfo, *, field: str) -> Date:
     other_date = info.data.get(field)
-    if other_date and v < other_date:
+    if other_date and v.is_before(other_date):
         raise ValueError(f'La date doit être après {field}')
     return v
 
 @ValidatorRegistry.register("date_before")
-def validate_date_before(v: datetime, info: ValidationInfo, *, field: str) -> datetime:
+def validate_date_before(v: Date, info: ValidationInfo, *, field: str) -> Date:
     other_date = info.data.get(field)
-    if other_date and v > other_date:
+    if other_date and v.is_after(other_date):
         raise ValueError(f'La date doit être avant {field}')
     return v
 
@@ -41,7 +40,7 @@ def validate_delay_matches_dates(v: Delay, info: ValidationInfo, *, start_date: 
     date_end = info.data.get(end_date)
 
     if date_start and date_end:
-        diff = relativedelta(date_end + relativedelta(months=1), date_start)
-        if diff != v:
+        diff = date_start.diff(date_end)
+        if v.years != diff.years or v.months != diff.months:
             raise ValueError(f'La durée du bail doit être de {diff} au lieu de {v}')
     return v
