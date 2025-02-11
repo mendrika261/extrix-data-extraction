@@ -41,7 +41,8 @@ def parse_args(args: List[str]) -> argparse.Namespace:
     )
     input_group.add_argument(
         "--no-cache",
-        action="store_true"
+        action="store_true",
+        help="Disable cache for OCR results"
     )
     input_group.add_argument(
         "--processor",

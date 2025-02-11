@@ -7,3 +7,4 @@ tmp/
 .idea/
 figures/
 test**
+monitoring.json
