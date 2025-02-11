@@ -6,10 +6,18 @@
                 "bailleur": "Nvidia",
                 "preneur": "Jean Dupont",
                 "adresse": "12 rue de la paix, 75000 Paris",
-                "description": "Appartement de 3 pièces, 2 chambres, 1 salle de bain, 1 cuisine, 1 salon",
+                "description": "Appartement de 3 pièces, 2 chambres, 1 salle de bain, 1 cuisine, 1 salon | usage: habitation uniquement",
                 "surface": 50.0,
-                "date_prise_effet": "2022-01-31",
-                "date_fin": "2023-01-31",
+                "date_prise_effet": {
+                    "year": 2022,
+                    "month": 1,
+                    "day": 31
+                },
+                "date_fin": {
+                    "year": 2023,
+                    "month": 1,
+                    "day": 31
+                },
                 "duree_bail": {
                     "years": 1
                 }
@@ -21,10 +29,18 @@
                 "bailleur": "Google",
                 "preneur": "AMD",
                 "adresse": "72 rue de la liberté, 69000 Lyon",
-                "description": "Bureau de 2 pièces, 1 salle de réunion, 1 salle de repos | demande d'accord si usage autre que bureautique",
+                "description": "Bureau de 2 pièces, 1 salle de réunion, 1 salle de repos | usage: tout possible sous réserve de l'accord du bailleur",
                 "surface": 100.0,
-                "date_prise_effet": "2000-02-25",
-                "date_fin": "2001-03-25",
+                "date_prise_effet": {
+                    "year": 2000,
+                    "month": 2,
+                    "day": 25
+                },
+                "date_fin": {
+                    "year": 2001,
+                    "month": 3,
+                    "day": 25
+                },
                 "duree_bail": {
                     "years": 1,
                     "months": 1
@@ -37,10 +53,18 @@
                 "bailleur": "Yves Rocher",
                 "preneur": "Paul Durand",
                 "adresse": "12 rue de la paix, 75000 Paris",
-                "description": "1 grand open space, 25 places de parking | usage bureautique uniquement",
+                "description": "1 grand open space - 25 places de parking | usage: bureautique uniquement",
                 "surface": 250.0,
-                "date_prise_effet": "2024-09-27",
-                "date_fin": "2024-12-27",
+                "date_prise_effet": {
+                    "year": 2024,
+                    "month": 9,
+                    "day": 27
+                },
+                "date_fin": {
+                    "year": 2024,
+                    "month": 12,
+                    "day": 27
+                },
                 "duree_bail": {
                     "months": 3
                 }

@@ -1,0 +1,30 @@
+{
+    "google-genai": {
+        "gemini-1.5-pro": {
+            "input": 1.25,
+            "output": 5.0
+        },
+        "gemini-2.0-flash": {
+            "input": 0.1,
+            "output": 0.4
+        },
+        "gemini-2.0-flash-lite-preview-02-05": {
+            "input": 0.075,
+            "output": 0.3
+        },
+        "gemini-1.5-flash": {
+            "input": 0.075,
+            "output": 0.3
+        },
+        "gemini-1.5-flash-8b": {
+            "input": 0.0375,
+            "output": 0.15
+        }
+    },
+    "default": {
+        "default": {
+            "input": 0.5,
+            "output": 1.5
+        }
+    }
+}
