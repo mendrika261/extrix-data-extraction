@@ -5,13 +5,13 @@
         "bailleur": {
             "field_type": "str",
             "title": "Bailleur",
-            "description": "Nom de la société UNIQUEMENT ou prénom nom de la personne UNIQUEMENT",
+            "description": "prénom nom des personnes SI SEULEMENT des particuliers, sinon nom de la société UNIQUEMENT",
             "required": true
         },
         "preneur": {
             "field_type": "str",
             "title": "Preneur",
-            "description": "Nom de la société UNIQUEMENT ou prénom nom de la personne UNIQUEMENT",
+            "description": "prénom nom des personnes SI SEULEMENT des particuliers, sinon nom de la société UNIQUEMENT",
             "required": true
         },
         "adresse": {
