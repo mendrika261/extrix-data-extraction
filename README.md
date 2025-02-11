@@ -3,8 +3,9 @@
 ## 🎯 Overview
 Extrix is a tool that simplify data extraction from documents (PDF, Word, etc.) and outputs structured data in `.json` or `.csv` format. It uses a language model (LLM) to get best understanding of the context and extract data.
 
+> See test results [here](TESTS.md)
 
-https://github.com/user-attachments/assets/7ec38a2c-1b34-4daa-ad3c-0a91435f92ca
+https://github.com/user-attachments/assets/f90f7178-fb0b-41a7-8249-5a22bfc9b715
 
 
 ## ✨ Features
@@ -81,13 +82,13 @@ Model is a schema that defines the structure of the output data. It is used to v
         "bailleur": {
             "field_type": "str",
             "title": "Bailleur",
-            "description": "Nom de la société UNIQUEMENT ou prénom nom de la personne UNIQUEMENT",
+            "description": "prénom nom des personnes SI SEULEMENT des particuliers, sinon nom de la société UNIQUEMENT",
             "required": true
         },
         "preneur": {
             "field_type": "str",
             "title": "Preneur",
-            "description": "Nom de la société UNIQUEMENT ou prénom nom de la personne UNIQUEMENT",
+            "description": "prénom nom des personnes SI SEULEMENT des particuliers, sinon nom de la société UNIQUEMENT",
             "required": true
         },
         "adresse": {
