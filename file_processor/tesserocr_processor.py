@@ -14,7 +14,7 @@ class TesserOCRProcessor(FileProcessor):
             raise OSNotSupportedError("TesserOCR library", "macOS")
 
         warnings.warn(
-            "TesserOCR library compatibility with current OS is not fully tested",
+            "TesserOCR library compatibility is not fully tested",
             OSCompatibilityWarning
         )
         

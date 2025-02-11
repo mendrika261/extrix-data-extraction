@@ -47,7 +47,9 @@ class LLMDataExtractor(DataExtractor):
 
     def start_monitoring(self, text: str) -> None:
         self.monitoring_handler.input_tokens = len(text.split())
-        
+
+    def stop_monitoring(self, result: BaseModel) -> None:
+        self.monitoring_handler.output_tokens = len(str(result).split())        
 
     def extract(self,
                 text: str,
@@ -59,6 +61,8 @@ class LLMDataExtractor(DataExtractor):
             "examples": self._examples
         })
         result = self._get_structured_llm(output_schema).invoke(prompt)
+
+        self.stop_monitoring(result)
         
         return result
 

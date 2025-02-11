@@ -398,5 +398,5 @@ Feel free to contribute or to request features. You can open an issue or submit 
 
 ## 📄 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-The above copyright notice and this permission notice shall be included in all
+> The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.

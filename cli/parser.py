@@ -22,7 +22,6 @@ def parse_args(args: List[str]) -> argparse.Namespace:
         formatter_class=RichHelpFormatter
     )
     
-    # Add argument groups and arguments
     input_group = parser.add_argument_group('Input Configuration')
     input_group.add_argument(
         "input_pattern",
@@ -50,7 +49,6 @@ def parse_args(args: List[str]) -> argparse.Namespace:
         default="unstructured"
     )
 
-    # LLM arguments
     llm_group = parser.add_argument_group('LLM Configuration')
     llm_group.add_argument(
         "--model",
@@ -69,7 +67,6 @@ def parse_args(args: List[str]) -> argparse.Namespace:
         help="LLM temperature setting - lower values are more focused (default: %(default)s)"
     )
 
-    # Model configuration
     config_group = parser.add_argument_group('Model Configuration')
     config_group.add_argument(
         "--examples",
@@ -82,7 +79,6 @@ def parse_args(args: List[str]) -> argparse.Namespace:
         help="Path to model schema JSON file defining the extraction structure (default: %(default)s)"
     )
 
-    # Output configuration
     output_group = parser.add_argument_group('Output Configuration')
     output_group.add_argument(
         "--output",

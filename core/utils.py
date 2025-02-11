@@ -78,6 +78,7 @@ def find_files(pattern: str) -> List[Path]:
     
     return sorted(matching_files)
 
+
 def update_monitoring_entry(existing_entry: Dict[str, Any], new_data: Dict[str, Any]) -> None:
     for key in ['input_tokens', 'output_tokens', 'total_tokens', 'duration_seconds', 'estimated_cost_usd']:
         existing_entry[key] += new_data[key]
@@ -102,6 +103,7 @@ def write_monitoring_data(path: Path, new_data: Dict[str, Any]) -> None:
             write_json(path, new_data)
     else:
         write_json(path, new_data)
+
 
 def convert_pdf_to_images(pdf_path: str) -> List[str]:
     temp_dir = tempfile.mkdtemp()
@@ -133,6 +135,7 @@ def handle_document_images_or_texts(file_path: str, image_handler_func) -> List[
         results.append(image_handler_func(str(file_path)))
     
     return results
+
 
 def is_macos() -> bool:
     return os.uname().sysname == 'Darwin'
