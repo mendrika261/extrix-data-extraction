@@ -3,32 +3,9 @@
 ## 🎯 Overview
 Extrix is a tool that simplify data extraction from documents (PDF, Word, etc.) and outputs structured data in `.json` or `.csv` format. It uses a language model (LLM) to get best understanding of the context and extract data.
 
-Example of output from `data/Bail 3.PDF`
-```json
-[
-  {
-    "bailleur": "François Girard",
-    "preneur": "Maison du Livre",
-    "adresse": "4 Rue de l'Académie, 75009 Paris",
-    "description": "une grande salle de vente, un bureau et des sanitaires | usage: librairie",
-    "surface": 60.0,
-    "date_prise_effet": {
-      "day": 1,
-      "month": 6,
-      "year": 2025
-    },
-    "date_fin": {
-      "day": 31,
-      "month": 5,
-      "year": 2034
-    },
-    "duree_bail": {
-      "years": 9,
-      "months": 0
-    }
-  }
-]
-```
+
+https://github.com/user-attachments/assets/7ec38a2c-1b34-4daa-ad3c-0a91435f92ca
+
 
 ## ✨ Features
 
@@ -293,6 +270,32 @@ Basic usage of the CLI tool, see [Configuration](#configuration) for more detail
 > The path can be a file or a glob pattern (e.g., `data/*.pdf`)
 ```bash
 python cli.py "data/BAIL 3.pdf"
+```
+Example of output from `data/Bail 3.PDF`
+```json
+[
+  {
+    "bailleur": "François Girard",
+    "preneur": "Maison du Livre",
+    "adresse": "4 Rue de l'Académie, 75009 Paris",
+    "description": "une grande salle de vente, un bureau et des sanitaires | usage: librairie",
+    "surface": 60.0,
+    "date_prise_effet": {
+      "day": 1,
+      "month": 6,
+      "year": 2025
+    },
+    "date_fin": {
+      "day": 31,
+      "month": 5,
+      "year": 2034
+    },
+    "duree_bail": {
+      "years": 9,
+      "months": 0
+    }
+  }
+]
 ```
 
 ### 📊 Monitoring LLM usage
