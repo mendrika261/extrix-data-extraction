@@ -1,4 +1,3 @@
-from cmd import PROMPT
 from functools import lru_cache
 from typing import Any, List, Type
 from pydantic import BaseModel, Field
@@ -6,15 +5,13 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.callbacks.base import BaseCallbackHandler
 from langchain.chat_models import init_chat_model
 from langchain_core.output_parsers import PydanticOutputParser
+from pyparsing import C
+from regex import T
 
+from cli.ui import CONSOLE
 from core.utils import load_json_file
 from core.monitoring import MonitoringCallbackHandler
 from data_extractor.data_extractor import DataExtractor, Example, ExamplesJson
-
-PROMPT = """
-You are an expert extraction algorithm.
-Extract information from the text strictly following example schema.
-"""
 
 class LLMDataExtractor(DataExtractor):
     def __init__(self,
@@ -31,27 +28,22 @@ class LLMDataExtractor(DataExtractor):
             temperature=temperature,
             callbacks=[self.monitoring_handler]
         )
-        
-        self._prompt_template = ChatPromptTemplate.from_messages([
-            ("system", PROMPT),
-            MessagesPlaceholder('examples'),
-            ("human", "{text}"),
-        ])
 
     def _extract_without_tooling(self,
                 text: str,
                 output_schema: Type[BaseModel]) -> BaseModel:
         parser = PydanticOutputParser(pydantic_object=output_schema)
-        prompt = self._prompt_template.invoke({
-            "text": text,
-            "examples": self._examples
-        }).partial(format_instructions=parser.get_format_instructions())
+        prompt = ChatPromptTemplate.from_messages([
+            ("system", "You are an expert extraction algorithm."
+             "Wrap the output in `json` tags\n{format_instructions}"),
+            MessagesPlaceholder('examples'),
+            ("human", "{text}"),
+        ]).partial(
+            format_instructions=parser.get_format_instructions(),
+            examples=self._examples,
+        )
         chain = prompt | self._llm | parser
-        result = chain.invoke({
-            "text": text,
-            "examples": self._examples
-        })
-        return result
+        return chain.invoke(text)
 
     def _get_structured_llm(self, output_schema: Type[BaseModel]) -> BaseCallbackHandler:
         return self._llm.with_structured_output(schema=output_schema)
@@ -59,21 +51,25 @@ class LLMDataExtractor(DataExtractor):
     def _extract_with_tooling(self,
                 text: str,
                 output_schema: Type[BaseModel]) -> BaseModel:
-        prompt = self._prompt_template.invoke({
-            "text": text,
-            "examples": self._examples
-        })
-        result = self._get_structured_llm(output_schema).invoke(prompt)
-        return result
+        prompt_template = ChatPromptTemplate.from_messages([
+            ("system", "You are an expert extraction algorithm."),
+            MessagesPlaceholder('examples'),
+            ("human", "{text}"),
+        ])
+        prompt = prompt_template.invoke({"text": text, "examples": self._examples})
+        llm = self._llm.with_structured_output(schema=output_schema)
+        return llm.invoke(prompt)
 
     def extract(self,
                 text: str,
                 output_schema: Type[BaseModel]) -> BaseModel:
         self.start_monitoring(text)
         
-        if not hasattr(self._llm, 'with_structured_output'):
+        try:
             result = self._extract_with_tooling(text, output_schema)
-        else:
+        except Exception:
+            CONSOLE.print("Structured output not supported by the model. "
+                            "Falling back to unstructured output.")
             result = self._extract_without_tooling(text, output_schema)
 
         self.stop_monitoring(result)
