@@ -6,7 +6,7 @@ from unstructured.cleaners.core import (
     auto_paragraph_grouper
 )
 
-from file_processor.interface import FileProcessor
+from file_processor.file_processor import FileProcessor
 
 
 class UnstructuredFileProcessor(FileProcessor):

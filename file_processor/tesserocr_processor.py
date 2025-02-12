@@ -3,7 +3,7 @@ from typing import List, Any
 from functools import lru_cache
 from PIL import Image
 
-from file_processor.interface import FileProcessor
+from file_processor.file_processor import FileProcessor
 from core.utils import handle_document_images_or_texts, is_macos
 from core.exceptions import OSNotSupportedError, OSCompatibilityWarning
 

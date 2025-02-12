@@ -18,5 +18,15 @@
     "output_tokens": 0,
     "total_tokens": 6984,
     "estimated_cost_usd": 0.0088
+  },
+  {
+    "timestamp": "2025-02-12T23:55:50.236620",
+    "model": "gemini-2.0-flash",
+    "provider": "google-genai",
+    "duration_seconds": 24.856039,
+    "input_tokens": 10925,
+    "output_tokens": 118,
+    "total_tokens": 11043,
+    "estimated_cost_usd": 0.0010999999999999998
   }
 ]

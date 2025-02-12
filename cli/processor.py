@@ -9,7 +9,7 @@ from cli.ui import CONSOLE as console
 from data_extractor.llm_extractor import LLMDataExtractor
 from core.model_factory import ModelFactory
 from core.utils import load_classes_from_package
-from file_processor.interface import FileProcessor
+from file_processor.file_processor import FileProcessor
 from rich.progress import Progress
 
 class CliProcessor:
