@@ -1,3 +1,4 @@
+import os
 from typing import List, Any
 from functools import lru_cache
 from langchain_unstructured import UnstructuredLoader
@@ -20,6 +21,7 @@ class UnstructuredFileProcessor(FileProcessor):
     def loader(self):
         if self._loader is None:
             self._loader = UnstructuredLoader(
+                partition_via_api=os.getenv("UNSTRUCTURED_API_KEY") is not None,
                 file_path=self._file_path,
                 strategy=self._strategy,
                 languages=self._languages,

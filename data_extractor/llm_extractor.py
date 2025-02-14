@@ -1,12 +1,10 @@
 from functools import lru_cache
-from typing import Any, List, Type
-from pydantic import BaseModel, Field
+from typing import List, Type
+from pydantic import BaseModel
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.callbacks.base import BaseCallbackHandler
 from langchain.chat_models import init_chat_model
 from langchain_core.output_parsers import PydanticOutputParser
-from pyparsing import C
-from regex import T
 
 from cli.ui import CONSOLE
 from core.utils import load_json_file
@@ -64,13 +62,15 @@ class LLMDataExtractor(DataExtractor):
                 text: str,
                 output_schema: Type[BaseModel]) -> BaseModel:
         self.start_monitoring(text)
-        
+
+        result = None
         try:
             result = self._extract_with_tooling(text, output_schema)
         except Exception:
             CONSOLE.print("Structured output not supported by the model. "
-                            "Falling back to unstructured output.")
+                            "Trying without tooling. It may fail.")
             result = self._extract_without_tooling(text, output_schema)
+                
 
         self.stop_monitoring(result)
         return result

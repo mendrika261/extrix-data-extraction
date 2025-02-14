@@ -1,5 +1,3 @@
-from pathlib import Path
-from typing import List, Tuple
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn
 
 from .processor import CliProcessor

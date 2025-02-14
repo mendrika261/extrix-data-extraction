@@ -1,0 +1,17 @@
+langchain
+rich
+pydantic
+python-dotenv
+diskcache
+python-dateutil
+
+langchain-unstructured
+unstructured-client
+unstructured[all-docs]
+python-magic
+
+easyocr
+tesserocr
+pdf2image
+
+langchain-google-genai

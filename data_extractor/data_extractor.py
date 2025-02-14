@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List
+from typing import Any, List
 from pydantic import BaseModel, Field
 
 class DataExtractor(ABC):
