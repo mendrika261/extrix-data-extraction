@@ -15,3 +15,5 @@ tesserocr
 pdf2image
 
 langchain-google-genai
+
+fastapi[standard]

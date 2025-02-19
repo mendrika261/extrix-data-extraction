@@ -1,0 +1,80 @@
+{
+    "title": "Leasing",
+    "description": "Informations extraites d'un contrat de location",
+    "type": "object",
+    "$defs": {
+        "date": {
+            "type": "object",
+            "properties": {
+                "year": {
+                    "type": "number"
+                },
+                "month": {
+                    "type": "number"
+                },
+                "day": {
+                    "type": "number"
+                }
+            }
+        }
+    },
+    "properties": {
+        "bailleur": {
+            "type": "string",
+            "description": "prénom nom des personnes SI SEULEMENT des particuliers, sinon nom de la société UNIQUEMENT"
+        },
+        "preneur": {
+            "type": "string",
+            "description": "prénom nom des personnes SI SEULEMENT des particuliers, sinon nom de la société UNIQUEMENT"
+        },
+        "adresse": {
+            "type": "string",
+            "description": "Numéro, rue, code postal, ville"
+        },
+        "description": {
+            "type": "string",
+            "description": "Description sous forme de liste, et types d'usage à la fin uniquement, pas de phrases"
+        },
+        "surface": {
+            "type": "number",
+            "description": "Surface du bien loué en m²"
+        },
+        "date_prise_effet": {
+            "type": "object",
+            "description": "Date de prise d'effet du bail",
+            "properties": {
+                "$ref": "#/$defs/date"
+            }
+        },
+        "date_fin": {
+            "type": "object",
+            "description": "Date de fin du bail",
+            "properties": {
+                "$ref": "#/$defs/date"
+            }
+        },
+        "duree_bail": {
+            "type": "object",
+            "description": "Durée du bail en années et mois",
+            "properties": {
+                "years": {
+                    "type": "number"
+                },
+                "months": {
+                    "type": "number"
+                }
+            }
+        }
+    },
+    "required": [
+        "bailleur",
+        "preneur",
+        "adresse",
+        "description",
+        "surface",
+        "date_prise_effet",
+        "date_fin",
+        "duree_bail"
+    ],
+    "additionalProperties": false
+}

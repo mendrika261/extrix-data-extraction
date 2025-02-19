@@ -1,14 +1,22 @@
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    TextColumn,
+    BarColumn,
+    TimeElapsedColumn,
+)
 
-from .processor import CliProcessor
-from .ui import CONSOLE as console, display_summary, print_banner
+from core.service import extract_from_config_file
+
+from cli.ui import CONSOLE as console, display_summary, print_banner
 from core.utils import find_files
 from core.exceptions import OSNotSupportedError
 
-def execute_extraction(args) -> int:
+
+def execute_extraction(args) -> None:
     try:
         print_banner()
-        
+
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
@@ -17,21 +25,23 @@ def execute_extraction(args) -> int:
             TimeElapsedColumn(),
             refresh_per_second=1,
             expand=True,
-            console=console
+            console=console,
         ) as progress:
-            processor = CliProcessor(args)
-            
-            files = find_files(args.input_pattern)
+            files = find_files(args.files_path)
             if not files:
-                console.print(f"[bold red]No files found matching pattern:[/bold red] {args.input_pattern}")
-                return 1
-            
-            results = processor.process_files(files, progress)
-            
-            display_summary(*results)
-            
-            return 0 if results[0] > 0 else 1
+                console.print(
+                    f"[bold red]No files found matching pattern:[/bold red] {args.files_path}"
+                )
+
+            args_dict = vars(args)
+            args_dict.pop("files_path")
+
+            results = extract_from_config_file(
+                **args_dict,
+                files_path=files,
+                progress=progress,
+            )
+            display_summary(*results, args.output)
 
     except OSNotSupportedError as e:
         console.print(f"[bold red]OS Compatibility Error:[/bold red] {str(e)}")
-        return 1

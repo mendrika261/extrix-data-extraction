@@ -17,7 +17,7 @@ https://github.com/user-attachments/assets/f90f7178-fb0b-41a7-8249-5a22bfc9b715
 - [X] Multiple document processing options (Unstructured, EasyOCR, TesserOCR)
 - [X] CLI Tool
 - [X] LLM that support tooling integrations for data extraction
-- [!] LLM monitoring (tokens consumption, cost estimation, etc.)
+- [ ] LLM monitoring (tokens consumption, cost estimation, etc.)
 - [X] LLM that not support tooling integrations for data extraction
 - [ ] Vision Language Model (VLM) support
 - [ ] Web API
