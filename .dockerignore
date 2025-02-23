@@ -1,0 +1,13 @@
+**/__pycache__
+**/.pytest_cache
+**/.coverage
+**/.env
+**/.git
+**/.gitignore
+**/.DS_Store
+**/venv
+**/tmp
+monitoring.json
+test*
+*.md
+!README.md

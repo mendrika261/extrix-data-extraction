@@ -1,5 +1,5 @@
 {
-    "name": "Leasing",
+    "name": "Bail",
     "description": "Informations extraites d'un contrat de location",
     "fields": {
         "bailleur": {

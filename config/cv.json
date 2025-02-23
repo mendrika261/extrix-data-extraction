@@ -1,0 +1,65 @@
+{
+    "name": "CV",
+    "description": "Informations extraites d'un CV",
+    "fields": {
+        "nom": {
+            "field_type": "str",
+            "title": "Nom",
+            "description": "nom de famille",
+            "required": true
+        },
+        "prenom": {
+            "field_type": "str",
+            "title": "Prénom",
+            "description": "prénom",
+            "required": true
+        },
+        "date_naissance": {
+            "field_type": "date",
+            "title": "Date de naissance",
+            "description": "Date de naissance"
+        },
+        "adresse": {
+            "field_type": "str",
+            "title": "Adresse",
+            "description": "Numéro, rue, code postal, ville",
+            "required": true
+        },
+        "telephone": {
+            "field_type": "str",
+            "title": "Téléphone",
+            "description": "Numéro de téléphone",
+            "required": true
+        },
+        "email": {
+            "field_type": "str",
+            "title": "Email",
+            "description": "Adresse email",
+            "required": true
+        },
+        "total_experience": {
+            "field_type": "delay",
+            "title": "Expérience totale",
+            "description": "Expérience totale en années et mois",
+            "required": true
+        },
+        "last_diploma": {
+            "field_type": "str",
+            "title": "Dernier diplôme le plus élevé",
+            "description": "Dernier diplôme le plus élevé obtenu",
+            "required": true
+        },
+        "last_diploma_date": {
+            "field_type": "date",
+            "title": "Date du dernier diplôme le plus élevé",
+            "description": "Date du dernier diplôme le plus élevé",
+            "required": true
+        },
+        "last_diploma_school": {
+            "field_type": "str",
+            "title": "Ecole du dernier diplôme le plus élevé",
+            "description": "Nom de l'école où le dernier diplôme a été obtenu",
+            "required": true
+        }
+    }
+}

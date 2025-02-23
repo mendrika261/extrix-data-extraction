@@ -2,7 +2,7 @@ from typing import List, Any
 from functools import lru_cache
 import easyocr
 
-from file_processor.interface import FileProcessor
+from file_processor.file_processor import FileProcessor
 from core.utils import handle_document_images_or_texts
 
 

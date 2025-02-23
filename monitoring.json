@@ -1,22 +1,42 @@
 [
   {
-    "timestamp": "2025-02-11T08:39:24.877077",
-    "model": "gemini-1.5-flash",
-    "provider": "google-genai",
-    "duration_seconds": 411.125783,
-    "input_tokens": 184320,
-    "output_tokens": 93,
-    "total_tokens": 184413,
-    "estimated_cost_usd": 0.008599999999999997
+    "timestamp": "2025-02-13T01:44:43.370127",
+    "model": "mistral",
+    "provider": "ollama",
+    "duration_seconds": 53.142306,
+    "input_tokens": 397,
+    "output_tokens": 2,
+    "total_tokens": 399,
+    "estimated_cost_usd": 0.0002
   },
   {
-    "timestamp": "2025-02-11T00:40:50.692436",
+    "timestamp": "2025-02-19T19:02:01.374686",
     "model": "gemini-1.5-pro",
     "provider": "google-genai",
-    "duration_seconds": 24.356106,
-    "input_tokens": 6984,
+    "duration_seconds": 346.18728000000004,
+    "input_tokens": 84915,
     "output_tokens": 0,
-    "total_tokens": 6984,
-    "estimated_cost_usd": 0.0088
+    "total_tokens": 84915,
+    "estimated_cost_usd": 0.10470000000000002
+  },
+  {
+    "timestamp": "2025-02-19T19:03:11.659064",
+    "model": "gemini-2.0-flash",
+    "provider": "google-genai",
+    "duration_seconds": 299.2032559999999,
+    "input_tokens": 100503,
+    "output_tokens": 148,
+    "total_tokens": 100651,
+    "estimated_cost_usd": 0.007099999999999999
+  },
+  {
+    "timestamp": "2025-02-16T02:25:51.876652",
+    "model": "deepseek-r1:7b",
+    "provider": "ollama",
+    "duration_seconds": 223.160363,
+    "input_tokens": 14715,
+    "output_tokens": 762,
+    "total_tokens": 15477,
+    "estimated_cost_usd": 0.0085
   }
 ]

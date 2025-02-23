@@ -14,15 +14,15 @@ https://github.com/user-attachments/assets/f90f7178-fb0b-41a7-8249-5a22bfc9b715
 - [X] Structured output `.json` or `.csv`
 - [X] Output validation with a model schema (Pyndatic Model or JSON Schema)
 - [X] Multi-language support
-- [X] Multiple document processing options (Unstructured, EasyOCR, TesserOCR)
 - [X] CLI Tool
 - [X] LLM that support tooling integrations for data extraction
-- [X] LLM monitoring (tokens consumption, cost estimation, etc.)
-- [ ] LLM that not support tooling integrations for data extraction
+- [X] LLM that not support tooling integrations for data extraction
+- [X] Web API
+- [X] Docker container
+- [ ] Multiple document processing options (Unstructured, EasyOCR, TesserOCR)
+- [ ] LLM monitoring (tokens consumption, cost estimation, etc.)
 - [ ] Vision Language Model (VLM) support
-- [ ] Web API
 - [ ] Python library
-- [ ] Docker container
 - [ ] ...
 
 ## 📚 Table of Contents
@@ -64,6 +64,46 @@ source venv/bin/activate
 Install dependencies
 ```bash
 pip install -r requirements.txt
+```
+
+## 🚀 Quick Start with Docker
+
+### Pull and Run
+```bash
+# Pull the image
+docker pull ghcr.io/mendrika261/extrix:latest
+
+# Run with example file
+docker run -v $(pwd)/data:/app/data ghcr.io/mendrika261/extrix:latest "data/example.pdf"
+```
+
+### Build from Source
+```bash
+# Clone the repository
+git clone https://github.com/mendrika261/extrix.git
+cd extrix
+
+# Build the image
+docker build -t extrix .
+
+# Run with your documents
+docker run -v $(pwd)/data:/app/data extrix "data/*.pdf"
+```
+
+### Environment Configuration
+Create a `.env` file with your configuration:
+```bash
+# LLM Provider (Required)
+GOOGLE_API_KEY=your_api_key
+
+# Optional configurations
+LANGUAGES=fr,en
+PDF_STRATEGY=auto
+```
+
+Run with your config:
+```bash
+docker run --env-file .env -v $(pwd)/data:/app/data extrix "data/*.pdf"
 ```
 
 ## 💡 Usage
@@ -369,33 +409,16 @@ Output Configuration:
   --output OUTPUT                       Output file path (supported formats: CSV, JSON)
 ```
 
-## 📚 Documentation
-### 🎯 Concept
-There are two main processes in the project: the **content extraction** and the **structured data extraction**.
-- The **content extraction** is the process of extracting text from documents.
-    - When the document is a scanned image, OCR (Optical Character Recognition) is applied to extract text. Current implementations are Pytesseract, EasyOCR and TesserOCR.
-    - When the document is a text-based document, the text is extracted directly. PdfMiner is used to extract elements from PDF.
-- The **structured data extraction** is the process of extracting specific data from the extracted text.
-    - The LLM is used to understand the context and extract data. The LLM can be with tooling integration or a standalone model (comming soon).
-    - The output data is validated using Pydantic with custom validators
+## 📚 Documentation 
+Full documentation is available in the [docs](docs) directory:
 
-### 🏗️ Structure
-Bellow is the structure of the project
-- `config/`: Contains the configuration files (e.g., model schema, cost mapping, etc.)
-- `data/`: Contains the data files (e.g., examples, documents, etc.)
-- `cli/`: Contains all cli ui related files
-- `core/`: Contains the core logic of the project
-    - `cache_manager.py`: Caching for OCR results
-    - `model_factory.py`: Dynamic pydantic model creation
-    - `models.py`: Custom models to use as schema
-    - `monitoring.py`: Monitoring of LLM usage
-    - `validators.py`: Implementation of built-in validators for json schema
-- `file_processor/`: Implementations of content extraction (e.g., unstructured, easyocr, etc.)
-- `data_extractor/`: Implementations of structured data extraction (e.g., LLM, etc.)
-- `.env`: Configuration file
-- `requirements.txt`: Dependencies list files
-
-### 📖 Full documentation ... (stay tuned)
+- [Installation Guide](docs/INSTALLATION.md)
+- [Usage Guide](docs/USAGE.md)
+- [API Documentation](docs/API.md)
+- [Configuration](docs/CONFIGURATION.md)
+- [Model Schema](docs/MODEL_SCHEMA.md)
+- [Examples](docs/EXAMPLES.md)
+- [Monitoring](docs/MONITORING.md)
 
 ## 🤝 Contribution
 Feel free to contribute or to request features. You can open an issue or submit a pull request.
